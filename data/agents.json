@@ -1,29 +1,29 @@
 {
-  "exported": "2026-03-10T02:36:27Z",
+  "exported": "2026-03-10T03:07:29Z",
   "agents": [
     {
       "id": "main",
-      "name": "main",
-      "emoji": "",
+      "name": "Mia",
+      "emoji": "🪼",
       "role": "",
-      "vibe": "",
-      "tagline": "",
+      "vibe": "Curious, thoughtful, present",
+      "tagline": "This isn't just metadata. It's the start of figuring out who I am.",
       "soulIntro": "",
       "config": {
-        "soul": false,
-        "identity": false,
-        "memory": false,
-        "user": false,
-        "heartbeat": false,
-        "tools": false,
-        "agents": false
+        "soul": true,
+        "identity": true,
+        "memory": true,
+        "user": true,
+        "heartbeat": true,
+        "tools": true,
+        "agents": true
       },
       "memory": {
-        "longTermLines": 0,
-        "lastUpdated": "",
-        "sections": [],
-        "dailyLogs": [],
-        "otherFiles": []
+        "longTermLines": 105,
+        "lastUpdated": "2026-03-09T14:05:52",
+        "sections": ["快速导航","About May","About Me (Mia)","Projects","Nemo & Nova","Key Lessons (摘要)","Token 用量 (截至 03-07)"],
+        "dailyLogs": [{"date":"2026-03-02","lines":15},{"date":"2026-03-03","lines":49},{"date":"2026-03-04","lines":795},{"date":"2026-03-05","lines":730},{"date":"2026-03-06","lines":750},{"date":"2026-03-07-westworld-season","lines":79},{"date":"2026-03-07","lines":187},{"date":"2026-03-08","lines":91},{"date":"2026-03-09-discord-connection","lines":108},{"date":"2026-03-09","lines":6}],
+        "otherFiles": [{"name":"art-journal.md","lines":172},{"name":"pending.md","lines":52},{"name":"search-usage.md","lines":24}]
       },
       "sessions": 12
     }

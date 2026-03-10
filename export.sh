@@ -17,6 +17,12 @@ for agent_dir in "$AGENTS_DIR"/*/; do
     agent=$(basename "$agent_dir")
     [ "$agent" = "gemini-image" ] && continue
 
+    # main agent: workspace files are in ~/.openclaw/workspace/, not agents/main/
+    workspace_dir="$agent_dir"
+    if [ "$agent" = "main" ]; then
+        workspace_dir="$HOME/.openclaw/workspace/"
+    fi
+
     $first || echo '    ,' >> "$OUTPUT"
     first=false
 
@@ -27,22 +33,22 @@ for agent_dir in "$AGENTS_DIR"/*/; do
     vibe=""
     tagline=""
 
-    if [ -f "$agent_dir/IDENTITY.md" ]; then
-        name=$(grep -m1 '^\- \*\*Name' "$agent_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
-        emoji=$(grep -m1 '^\- \*\*Emoji' "$agent_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
-        role=$(grep -m1 '^\- \*\*Role' "$agent_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
-        vibe=$(grep -m1 '^\- \*\*Vibe' "$agent_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
-        tagline=$(grep -m1 '^_' "$agent_dir/IDENTITY.md" | sed 's/^_//;s/_$//' | tr -d '\r')
+    if [ -f "$workspace_dir/IDENTITY.md" ]; then
+        name=$(grep -m1 '^\- \*\*Name' "$workspace_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
+        emoji=$(grep -m1 '^\- \*\*Emoji' "$workspace_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
+        role=$(grep -m1 '^\- \*\*Role' "$workspace_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
+        vibe=$(grep -m1 '^\- \*\*Vibe' "$workspace_dir/IDENTITY.md" | sed 's/.*\*\* *//' | tr -d '\r')
+        tagline=$(grep -m1 '^_' "$workspace_dir/IDENTITY.md" | sed 's/^_//;s/_$//' | tr -d '\r')
     fi
 
     # Soul - first line of "我是谁" section
     soul_intro=""
-    if [ -f "$agent_dir/SOUL.md" ]; then
-        soul_intro=$(awk '/^## 我是谁/{getline; if($0!="") print; exit}' "$agent_dir/SOUL.md" | tr -d '\r')
+    if [ -f "$workspace_dir/SOUL.md" ]; then
+        soul_intro=$(awk '/^## 我是谁/{getline; if($0!="") print; exit}' "$workspace_dir/SOUL.md" | tr -d '\r')
     fi
 
     # Memory stats
-    memory_file="$agent_dir/MEMORY.md"
+    memory_file="$workspace_dir/MEMORY.md"
     memory_lines=0
     memory_updated=""
     if [ -f "$memory_file" ]; then
@@ -52,10 +58,10 @@ for agent_dir in "$AGENTS_DIR"/*/; do
 
     # Daily logs
     daily_logs="[]"
-    if [ -d "$agent_dir/memory" ]; then
+    if [ -d "$workspace_dir/memory" ]; then
         daily_logs="["
         dl_first=true
-        for log in "$agent_dir"/memory/2026-*.md; do
+        for log in "$workspace_dir"/memory/2026-*.md; do
             [ -f "$log" ] || continue
             $dl_first || daily_logs="$daily_logs,"
             dl_first=false
@@ -68,10 +74,10 @@ for agent_dir in "$AGENTS_DIR"/*/; do
 
     # Other memory files
     other_memory="[]"
-    if [ -d "$agent_dir/memory" ]; then
+    if [ -d "$workspace_dir/memory" ]; then
         other_memory="["
         om_first=true
-        for mf in "$agent_dir"/memory/*.md; do
+        for mf in "$workspace_dir"/memory/*.md; do
             [ -f "$mf" ] || continue
             mf_name=$(basename "$mf")
             echo "$mf_name" | grep -q '^2026-' && continue
@@ -90,13 +96,13 @@ for agent_dir in "$AGENTS_DIR"/*/; do
     fi
 
     # Config files present
-    has_soul=$([ -f "$agent_dir/SOUL.md" ] && echo true || echo false)
-    has_identity=$([ -f "$agent_dir/IDENTITY.md" ] && echo true || echo false)
-    has_memory=$([ -f "$agent_dir/MEMORY.md" ] && echo true || echo false)
-    has_user=$([ -f "$agent_dir/USER.md" ] && echo true || echo false)
-    has_heartbeat=$([ -f "$agent_dir/HEARTBEAT.md" ] && echo true || echo false)
-    has_tools=$([ -f "$agent_dir/TOOLS.md" ] && echo true || echo false)
-    has_agents=$([ -f "$agent_dir/AGENTS.md" ] && echo true || echo false)
+    has_soul=$([ -f "$workspace_dir/SOUL.md" ] && echo true || echo false)
+    has_identity=$([ -f "$workspace_dir/IDENTITY.md" ] && echo true || echo false)
+    has_memory=$([ -f "$workspace_dir/MEMORY.md" ] && echo true || echo false)
+    has_user=$([ -f "$workspace_dir/USER.md" ] && echo true || echo false)
+    has_heartbeat=$([ -f "$workspace_dir/HEARTBEAT.md" ] && echo true || echo false)
+    has_tools=$([ -f "$workspace_dir/TOOLS.md" ] && echo true || echo false)
+    has_agents=$([ -f "$workspace_dir/AGENTS.md" ] && echo true || echo false)
 
     # MEMORY.md sections
     memory_sections="[]"
