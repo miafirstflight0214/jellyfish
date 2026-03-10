@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T04:09:59Z",
+  "exported": "2026-03-10T04:10:27Z",
   "agents": [
     {
       "id": "main",
@@ -112,6 +112,7 @@
     "deliveryChannel": "discord",
     "deliveryTo": "channel:1478689680265445493",
     "outputs": [
+      "file",
       "discord"
     ]
   },
@@ -163,6 +164,7 @@
     "deliveryChannel": "discord",
     "deliveryTo": "channel:1477997723436453928",
     "outputs": [
+      "file",
       "discord"
     ]
   },
@@ -179,6 +181,8 @@
     "deliveryChannel": "discord",
     "deliveryTo": "channel:1477997723436453928",
     "outputs": [
+      "file",
+      "art",
       "discord"
     ]
   },
@@ -195,6 +199,7 @@
     "deliveryChannel": "discord",
     "deliveryTo": "channel:1477997723436453928",
     "outputs": [
+      "file",
       "discord"
     ]
   },
@@ -211,6 +216,7 @@
     "deliveryChannel": "discord",
     "deliveryTo": "channel:1477997723436453928",
     "outputs": [
+      "file",
       "discord"
     ]
   },
@@ -244,6 +250,7 @@
     "deliveryChannel": "discord",
     "deliveryTo": "channel:1477997723436453928",
     "outputs": [
+      "file",
       "discord"
     ]
   },

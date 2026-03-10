@@ -230,9 +230,10 @@ for j in jobs:
     state = j.get('state', {})
     payload = j.get('payload', {})
     msg = payload.get('message', '')
+    delivery = j.get('delivery', {})
+    outputs = detect_outputs(msg, delivery)
     # Truncate task message to first 100 chars
     if len(msg) > 100: msg = msg[:100] + '...'
-    delivery = j.get('delivery', {})
     out.append({
         'id': j.get('id',''),
         'name': j.get('name',''),
@@ -245,7 +246,7 @@ for j in jobs:
         'task': msg,
         'deliveryChannel': delivery.get('channel',''),
         'deliveryTo': delivery.get('to',''),
-        'outputs': detect_outputs(msg, delivery),
+        'outputs': outputs,
     })
 print(json.dumps(out, ensure_ascii=False, indent=2))
 " >> "$OUTPUT" 2>/dev/null
