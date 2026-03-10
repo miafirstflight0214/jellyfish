@@ -492,7 +492,7 @@ function render(data) {
   if (sharedFiles.length > 0) {
     html += '<div class="section-row">';
     html += '<div class="section-cell" style="grid-column:1/-1"><div class="knowledge-list" style="display:flex;flex-wrap:wrap;gap:4px 24px">';
-    sharedFiles.forEach(f => {
+    sharedFiles.filter(f => f.name !== 'README.md').forEach(f => {
       const name = f.name.split('/').pop();
       html += `<div class="knowledge-item"><span><span style="font-size:9px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:1px 4px;margin-right:6px;opacity:0.8">shared</span>${name}</span><span>${f.lines}L</span></div>`;
     });
