@@ -149,6 +149,21 @@ for agent_dir in "$AGENTS_DIR"/*/; do
         nova) tagline_en="When I'm here, problems get solved." ;;
     esac
 
+    # Heartbeat content (extract tasks — ### headers or top-level bullets)
+    heartbeat_tasks="[]"
+    if [ -f "$workspace_dir/HEARTBEAT.md" ]; then
+        heartbeat_tasks="["
+        hb_first=true
+        while IFS= read -r line; do
+            task=$(echo "$line" | sed 's/^### [0-9]*\. *//;s/^- //' | tr -d '\r' | sed 's/"/\\"/g')
+            [ -z "$task" ] && continue
+            $hb_first || heartbeat_tasks="$heartbeat_tasks,"
+            hb_first=false
+            heartbeat_tasks="$heartbeat_tasks\"$task\""
+        done < <(grep -E '^### |^- ' "$workspace_dir/HEARTBEAT.md" | grep -v '^- \[' | head -10)
+        heartbeat_tasks="$heartbeat_tasks]"
+    fi
+
     cat >> "$OUTPUT" << EOF
     {
       "id": "$agent",
@@ -177,12 +192,34 @@ for agent_dir in "$AGENTS_DIR"/*/; do
         "dailyLogs": $daily_logs,
         "otherFiles": $other_memory
       },
-      "sessions": $session_count
+      "sessions": $session_count,
+      "heartbeatTasks": $heartbeat_tasks
     }
 EOF
 done
 
-echo '  ]' >> "$OUTPUT"
+echo '  ],' >> "$OUTPUT"
+
+# Cron jobs
+echo '  "crons": ' >> "$OUTPUT"
+openclaw cron list --json 2>/dev/null | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+jobs = data.get('jobs', data if isinstance(data, list) else [])
+out = []
+for j in jobs:
+    out.append({
+        'id': j.get('id',''),
+        'name': j.get('name',''),
+        'schedule': j.get('schedule',''),
+        'agent': j.get('agentId',''),
+        'status': j.get('status',''),
+        'lastRun': j.get('lastRun',''),
+        'nextRun': j.get('nextRun','')
+    })
+print(json.dumps(out, indent=2))
+" >> "$OUTPUT" 2>/dev/null
+
 echo '}' >> "$OUTPUT"
 
 echo "Exported to $OUTPUT"
