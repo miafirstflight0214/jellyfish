@@ -556,8 +556,8 @@ function render(data) {
         let summary = task.replace(/^你是.*?。/,'').replace(/^先.*?。/,'').trim();
         if (summary.length > 80) summary = summary.substring(0, 80) + '…';
 
-        const labelNames = { discord: '→ Discord', file: '→ System Files', art: '→ Art Generation' };
-        const labelNamesZh = { discord: '→ Discord', file: '→ 系统文件', art: '→ 生成画作' };
+        const labelNames = { discord: 'Discord', file: 'System', art: 'Art' };
+        const labelNamesZh = { discord: 'Discord', file: '系统', art: '画作' };
         const outputs = c.outputs || ['discord'];
         const labels = outputs.map(o => {
           const name = (currentLang === 'zh' ? labelNamesZh[o] : labelNames[o]) || o;
