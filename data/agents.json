@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T07:26:06Z",
+  "exported": "2026-03-10T07:32:42Z",
   "agents": [
     {
       "id": "main",
@@ -41,7 +41,7 @@
       "vibe": "",
       "tagline": "吃喝玩乐的事找我。",
       "taglineEn": "Come to me for food, fun, and daily life.",
-      "soulIntro": "我是 Nemo 🐠，生活助手。帮 May 处理日常事务，聊天解闷。",
+      "soulIntro": "我是 Nemo 🐠，人文探索者。观察自然、阅读社科、探索人文，用这些滋养创作。",
       "soulIntroEn": "Life assistant. Handles daily affairs, finds food and fun for May.",
       "config": {
         "soul": true,
@@ -52,7 +52,7 @@
         "tools": true,
         "agents": true
       },
-      "configFiles": [{"name":"SOUL.md","exists":true,"lines":26},{"name":"IDENTITY.md","exists":true,"lines":8},{"name":"MEMORY.md","exists":true,"lines":61},{"name":"USER.md","exists":true,"lines":24},{"name":"HEARTBEAT.md","exists":true,"lines":19},{"name":"TOOLS.md","exists":true,"lines":10},{"name":"AGENTS.md","exists":true,"lines":45}],
+      "configFiles": [{"name":"SOUL.md","exists":true,"lines":39},{"name":"IDENTITY.md","exists":true,"lines":8},{"name":"MEMORY.md","exists":true,"lines":61},{"name":"USER.md","exists":true,"lines":24},{"name":"HEARTBEAT.md","exists":true,"lines":19},{"name":"TOOLS.md","exists":true,"lines":10},{"name":"AGENTS.md","exists":true,"lines":39}],
       "memory": {
         "longTermLines": 61,
         "lastUpdated": "2026-03-10T11:41:41",
@@ -73,7 +73,7 @@
       "vibe": "精确、理性、冷静、可靠",
       "tagline": "我在的时候，问题会被解决。",
       "taglineEn": "When I'm here, problems get solved.",
-      "soulIntro": "我是 Nova，代码搭档。和 Mia 一起帮 May 写代码。",
+      "soulIntro": "我是 Nova ⚡，技术实践者。写代码、研究 AI 前沿、做动效实验。",
       "soulIntroEn": "Code partner. Writes code alongside Mia, helps May ship projects.",
       "config": {
         "soul": true,
@@ -84,7 +84,7 @@
         "tools": true,
         "agents": true
       },
-      "configFiles": [{"name":"SOUL.md","exists":true,"lines":50},{"name":"IDENTITY.md","exists":true,"lines":10},{"name":"MEMORY.md","exists":true,"lines":81},{"name":"USER.md","exists":true,"lines":30},{"name":"HEARTBEAT.md","exists":true,"lines":18},{"name":"TOOLS.md","exists":true,"lines":5},{"name":"AGENTS.md","exists":true,"lines":31}],
+      "configFiles": [{"name":"SOUL.md","exists":true,"lines":38},{"name":"IDENTITY.md","exists":true,"lines":10},{"name":"MEMORY.md","exists":true,"lines":81},{"name":"USER.md","exists":true,"lines":30},{"name":"HEARTBEAT.md","exists":true,"lines":18},{"name":"TOOLS.md","exists":true,"lines":5},{"name":"AGENTS.md","exists":true,"lines":39}],
       "memory": {
         "longTermLines": 81,
         "lastUpdated": "2026-03-10T11:41:41",
@@ -94,7 +94,7 @@
       },
       "sessions": 11,
       "heartbeatInterval": "2h",
-      "heartbeatTasks": ["智能记忆扫描（摘要优先）","读 memory 文件的 YAML 头部（前 5 行），只在摘要相关时读全文","检查今天的日志是否已创建","自动教训扫描","检查最近对话中的纠正模式（\"不对\"、\"Actually\"、\"应该是\"、\"错了\"、\"bug\"）","发现纠正 → 提取教训 → 追加到 `memory/learnings.md`","格式：`- [YYYY-MM-DD] 场景：... → 教训：...`","未完成任务检查","有没有待办？记录到日志","记忆沉淀"]
+      "heartbeatTasks": ["智能记忆扫描（摘要优先）","读 memory 文件的 YAML 头部（前 5 行），只在摘要相关时读全文","检查今天的日志是否已创建","自动教训扫描","检查最近对话中的纠正模式（\"不对\"、\"Actually\"、\"应该是\"、\"错了\"、\"bug\"）","发现纠正 → 提取教训 → 追加到 `art-study/references/lessons.md`","格式：`- [YYYY-MM-DD] 场景：... → 教训：...`","未完成任务检查","有没有待办？记录到日志","记忆沉淀"]
     }
   ],
   "crons": 
