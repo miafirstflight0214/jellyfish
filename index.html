@@ -433,7 +433,22 @@ function render(data) {
   });
   html += '</div>';
 
-  // Row 2: Configuration
+  // Row 2: Daily Activity
+  html += `<div class="section-row"><div class="row-header">${t.dailyActivity}</div></div>`;
+  html += '<div class="section-row">';
+  data.agents.forEach(agent => {
+    const barColor = bgColors[agent.id] || 'var(--accent)';
+    const logBars = agent.memory.dailyLogs.map(log => {
+      const h = Math.max(5, (log.lines / maxLogLines) * 44);
+      return `<div class="mem-bar" style="height:${h}px;background:${barColor}">
+        <span class="bar-tip">${log.date.replace('2026-','')}: ${log.lines}L</span>
+      </div>`;
+    }).join('') || `<span style="font-size:12px;color:var(--text-muted);font-style:italic">${t.noLogs}</span>`;
+    html += `<div class="section-cell"><div class="memory-graph">${logBars}</div></div>`;
+  });
+  html += '</div>';
+
+  // Row 3: Configuration
   html += `<div class="section-row"><div class="row-header">${t.configuration}</div></div>`;
   html += '<div class="section-row">';
   data.agents.forEach(agent => {
@@ -466,24 +481,7 @@ function render(data) {
   });
   html += '</div>';
 
-  // Row 3: Long-term Memory (removed)
-
-  // Row 4: Daily Activity
-  html += `<div class="section-row"><div class="row-header">${t.dailyActivity}</div></div>`;
-  html += '<div class="section-row">';
-  data.agents.forEach(agent => {
-    const barColor = bgColors[agent.id] || 'var(--accent)';
-    const logBars = agent.memory.dailyLogs.map(log => {
-      const h = Math.max(5, (log.lines / maxLogLines) * 44);
-      return `<div class="mem-bar" style="height:${h}px;background:${barColor}">
-        <span class="bar-tip">${log.date.replace('2026-','')}: ${log.lines}L</span>
-      </div>`;
-    }).join('') || `<span style="font-size:12px;color:var(--text-muted);font-style:italic">${t.noLogs}</span>`;
-    html += `<div class="section-cell"><div class="memory-graph">${logBars}</div></div>`;
-  });
-  html += '</div>';
-
-  // Row 5: Knowledge Files
+  // Row 4: Knowledge Files
   html += `<div class="section-row"><div class="row-header">${t.knowledgeFiles}</div></div>`;
   html += '<div class="section-row">';
   data.agents.forEach(agent => {
