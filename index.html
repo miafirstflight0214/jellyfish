@@ -496,6 +496,19 @@ function render(data) {
   });
   html += '</div>';
 
+  // Row 5: Shared Knowledge
+  if (data.shared && data.shared.length > 0) {
+    html += `<div class="section-row"><div class="row-header">${currentLang === 'zh' ? '共享知识库' : 'Shared Knowledge'} <span style="font-size:10px;color:var(--text-muted);font-weight:400;margin-left:8px">art-study/</span></div></div>`;
+    html += '<div class="section-row">';
+    html += '<div class="section-cell" style="grid-column:1/-1">';
+    html += '<div class="knowledge-list" style="display:flex;flex-wrap:wrap;gap:8px 24px">';
+    data.shared.forEach(f => {
+      html += `<div class="knowledge-item" style="min-width:200px"><span>${f.name}</span><span>${f.lines}L</span></div>`;
+    });
+    html += '</div></div>';
+    html += '</div>';
+  }
+
   // Row 6: Sessions & Heartbeat (compact)
   html += `<div class="section-row"><div class="row-header">${t.sessionsLabel} & ${t.heartbeat}</div></div>`;
   html += '<div class="section-row">';

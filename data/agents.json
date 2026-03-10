@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T04:10:27Z",
+  "exported": "2026-03-10T04:26:30Z",
   "agents": [
     {
       "id": "main",
@@ -306,4 +306,19 @@
     ]
   }
 ]
+  ,"shared": [
+    {"name":"artists/art-notes.md","lines":331}
+    ,
+    {"name":"artists/creative-log.md","lines":42}
+    ,
+    {"name":"references/lessons.md","lines":172}
+    ,
+    {"name":"references/nature-study.md","lines":32}
+    ,
+    {"name":"viewing-notes/viewing-list.md","lines":87}
+    ,
+    {"name":"viewing-notes/viewing-notes.md","lines":60}
+    ,
+    {"name":"README.md","lines":35}
+  ]
 }

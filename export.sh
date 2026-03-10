@@ -251,6 +251,19 @@ for j in jobs:
 print(json.dumps(out, ensure_ascii=False, indent=2))
 " >> "$OUTPUT" 2>/dev/null
 
+# Shared knowledge files
+echo '  ,"shared": [' >> "$OUTPUT"
+shared_first=true
+for sf in "$HOME/.openclaw/shared/art-study"/**/*.md "$HOME/.openclaw/shared/art-study"/*.md; do
+    [ -f "$sf" ] || continue
+    $shared_first || echo '    ,' >> "$OUTPUT"
+    shared_first=false
+    sf_name=$(echo "$sf" | sed "s|$HOME/.openclaw/shared/art-study/||")
+    sf_lines=$(wc -l < "$sf" | tr -d ' ')
+    echo "    {\"name\":\"$sf_name\",\"lines\":$sf_lines}" >> "$OUTPUT"
+done
+echo '  ]' >> "$OUTPUT"
+
 echo '}' >> "$OUTPUT"
 
 echo "Exported to $OUTPUT"
