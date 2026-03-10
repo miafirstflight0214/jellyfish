@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T04:41:50Z",
+  "exported": "2026-03-10T05:24:01Z",
   "agents": [
     {
       "id": "main",
@@ -25,8 +25,8 @@
         "longTermLines": 105,
         "lastUpdated": "2026-03-09T14:05:52",
         "sections": ["快速导航","About May","About Me (Mia)","Projects","Nemo & Nova","Key Lessons (摘要)","Token 用量 (截至 03-07)"],
-        "dailyLogs": [{"date":"2026-03-06","lines":750},{"date":"2026-03-07","lines":269},{"date":"2026-03-08","lines":91},{"date":"2026-03-09","lines":117},{"date":"2026-03-10","lines":41}],
-        "otherFiles": [{"name":"architecture-decisions.md","lines":81},{"name":"art-journal.md","lines":176},{"name":"pending.md","lines":52},{"name":"search-usage.md","lines":24}]
+        "dailyLogs": [{"date":"2026-03-06","lines":750},{"date":"2026-03-07","lines":269},{"date":"2026-03-08","lines":91},{"date":"2026-03-09","lines":117},{"date":"2026-03-10","lines":72}],
+        "otherFiles": [{"name":"architecture-decisions.md","lines":81},{"name":"art-journal.md","lines":176},{"name":"book-reading.md","lines":17},{"name":"pending.md","lines":52},{"name":"token-usage.md","lines":28}]
       },
       "sessions": 12,
       "heartbeatInterval": "disabled",
@@ -58,7 +58,7 @@
         "lastUpdated": "2026-03-10T11:41:41",
         "sections": ["About May","我的职责","协作","学习进度","Cron Jobs","Key Lessons"],
         "dailyLogs": [{"date":"2026-03-05","lines":5},{"date":"2026-03-06","lines":84},{"date":"2026-03-07","lines":40},{"date":"2026-03-08","lines":44},{"date":"2026-03-09","lines":91}],
-        "otherFiles": []
+        "otherFiles": [{"name":"book-reading.md","lines":13},{"name":"nature-study.md","lines":32},{"name":"pending.md","lines":13}]
       },
       "sessions": 11,
       "heartbeatInterval": "1h",
@@ -89,8 +89,8 @@
         "longTermLines": 81,
         "lastUpdated": "2026-03-10T11:41:41",
         "sections": ["About May","审美偏好","项目","技术教训","技术栈","协作","GitHub 凭据"],
-        "dailyLogs": [{"date":"2026-03-06","lines":129},{"date":"2026-03-07","lines":57},{"date":"2026-03-08","lines":9},{"date":"2026-03-09","lines":29},{"date":"2026-03-10","lines":61}],
-        "otherFiles": [{"name":"learnings.md","lines":69}]
+        "dailyLogs": [{"date":"2026-03-06","lines":129},{"date":"2026-03-07","lines":57},{"date":"2026-03-08","lines":9},{"date":"2026-03-09","lines":29},{"date":"2026-03-10","lines":74}],
+        "otherFiles": [{"name":"ai-tech-learning.md","lines":13},{"name":"app-development.md","lines":13},{"name":"motion.md","lines":13},{"name":"pending.md","lines":13}]
       },
       "sessions": 10,
       "heartbeatInterval": "2h",
@@ -313,12 +313,12 @@
     ,
     {"name":"references/lessons.md","lines":172}
     ,
-    {"name":"references/nature-study.md","lines":32}
-    ,
     {"name":"viewing-notes/viewing-list.md","lines":87}
     ,
     {"name":"viewing-notes/viewing-notes.md","lines":60}
     ,
     {"name":"README.md","lines":35}
+    ,
+    {"name":"project-mia-site.md","lines":24}
   ]
 }
