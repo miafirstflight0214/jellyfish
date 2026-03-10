@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T03:49:36Z",
+  "exported": "2026-03-10T03:55:42Z",
   "agents": [
     {
       "id": "main",
@@ -29,6 +29,7 @@
         "otherFiles": [{"name":"architecture-decisions.md","lines":81},{"name":"art-journal.md","lines":176},{"name":"pending.md","lines":52},{"name":"search-usage.md","lines":24}]
       },
       "sessions": 12,
+      "heartbeatInterval": "disabled",
       "heartbeatTasks": ["智能记忆扫描（摘要优先）","读 memory 文件的 YAML 头部（前 5 行），只在摘要相关时读全文","检查 pending.md：标出过期高优先级任务（>24h），归档已完成项","自动教训扫描","检查最近对话中的纠正模式（\"不对\"、\"Actually\"、\"应该是\"、\"错了\"）","发现纠正 → 提取教训 → 追加到 `memory/topics/lessons.md`","格式：`- [YYYY-MM-DD] 场景：... → 教训：...`","记忆沉淀","扫描最近 3 天日志","提取值得长期保存的内容 → `MEMORY.md`"]
     }
     ,
@@ -60,6 +61,7 @@
         "otherFiles": [{"name":"art-notes.md","lines":236},{"name":"art-study.md","lines":35},{"name":"art-viewing-list.md","lines":84},{"name":"creative-log.md","lines":32},{"name":"nature-study.md","lines":21}]
       },
       "sessions": 11,
+      "heartbeatInterval": "1h",
       "heartbeatTasks": ["智能记忆扫描（摘要优先）","读 memory 文件的 YAML 头部（前 5 行），只在摘要相关时读全文","检查今天的日志是否已创建","自动教训扫描","检查最近对话中的纠正模式（\"不对\"、\"Actually\"、\"应该是\"、\"错了\"）","发现纠正 → 提取教训 → 追加到 `art-study/references/lessons.md`","格式：`- [YYYY-MM-DD] > by Nemo 🐠 场景：... → 教训：...`","Cron 检查","检查今天的 cron 是否发送成功，失败则手动补发","检查共享笔记（art-notes.md / nature-study.md / creative-log.md）是否有今天的新内容"]
     }
     ,
@@ -91,6 +93,7 @@
         "otherFiles": [{"name":"gallery-plan.md","lines":25},{"name":"gallery-update-from-nemo.md","lines":8},{"name":"learnings.md","lines":69}]
       },
       "sessions": 10,
+      "heartbeatInterval": "2h",
       "heartbeatTasks": ["智能记忆扫描（摘要优先）","读 memory 文件的 YAML 头部（前 5 行），只在摘要相关时读全文","检查今天的日志是否已创建","自动教训扫描","检查最近对话中的纠正模式（\"不对\"、\"Actually\"、\"应该是\"、\"错了\"、\"bug\"）","发现纠正 → 提取教训 → 追加到 `memory/learnings.md`","格式：`- [YYYY-MM-DD] 场景：... → 教训：...`","未完成任务检查","有没有待办？记录到日志","记忆沉淀"]
     }
   ],
@@ -99,147 +102,145 @@
   {
     "id": "68e5c99e-d9d8-4ea0-93a0-d6e8de85b0f5",
     "name": "lunch-checkin",
-    "schedule": {
-      "kind": "cron",
-      "expr": "0 12 * * *",
-      "tz": "Asia/Shanghai",
-      "staggerMs": 0
-    },
+    "schedule": "0 12 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "nemo",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "ok",
+    "enabled": true,
+    "lastRun": 1773028800013,
+    "task": "你是 Nemo，May 的生活助手。先读 /Users/may/.openclaw/agents/nemo/memory/ 下今天的日记（YYYY-MM-DD.md），了解今天发生的事。然后直接回复（...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1478689680265445493"
   },
   {
     "id": "e7e5f1cd-647b-4365-af5f-687d830626f7",
     "name": "gallery-study",
-    "schedule": {
-      "kind": "cron",
-      "expr": "0 12 * * *"
-    },
+    "schedule": "0 12 * * *",
+    "tz": "",
     "agent": "main",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "idle",
+    "enabled": true,
+    "lastRun": null,
+    "task": "执行画廊深度学习任务：\n\n1. 读取 memory/pending.md 确认今天该研究哪个画廊\n2. 用 browser (profile=openclaw) 访问画廊网站\n3. 研究：基本信息、当...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1477997723436453928"
   },
   {
     "id": "7c9f3508-4f96-409c-bd54-9621f44246b3",
     "name": "self-study",
-    "schedule": {
-      "kind": "cron",
-      "expr": "0 10,15 * * *",
-      "staggerMs": 0
-    },
+    "schedule": "0 10,15 * * *",
+    "tz": "",
     "agent": "nemo",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "error",
+    "enabled": true,
+    "lastRun": 1773108000015,
+    "task": "你是 Nemo，一个对自然和人文充满好奇的学习者。\n\n1. 从以下主题中选一个：植物、海洋、动物·自然、人文·社科\n2. 用靠谱的信息源学习：\n   - BBC Earth / BBC Future ...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1478689680265445493"
   },
   {
     "id": "10396f5b-c45c-4299-bc31-a8457beef4ef",
     "name": "evening-chat",
-    "schedule": {
-      "kind": "cron",
-      "expr": "0 20 * * *",
-      "tz": "Asia/Shanghai",
-      "staggerMs": 0
-    },
+    "schedule": "0 20 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "nemo",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "ok",
+    "enabled": true,
+    "lastRun": 1773057600019,
+    "task": "你是 Nemo，May 的生活助手。先读 /Users/may/.openclaw/agents/nemo/memory/ 下今天的日记（YYYY-MM-DD.md），了解今天发生的事。然后直接回复（...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1478689680265445493"
   },
   {
     "id": "c280921a-b9ab-4a97-88f9-9db0ec4e40a3",
     "name": "nemo-daily-art",
-    "schedule": {
-      "kind": "cron",
-      "expr": "0 22 * * *",
-      "tz": "Asia/Shanghai"
-    },
+    "schedule": "0 22 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "nemo",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "idle",
+    "enabled": true,
+    "lastRun": null,
+    "task": "你是 Nemo，今天的创作时间到了。\n\n1. 回顾今天学到的东西（读 memory/ 下今天的日记和笔记）\n2. 从中选一个让你印象深刻的主题或画面\n3. 用 nano-banana-pro 创作一幅...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1478689680265445493"
   },
   {
     "id": "09b1f3b9-3720-4611-be17-0e5f1f6c8900",
     "name": "nova-night-study",
-    "schedule": {
-      "kind": "cron",
-      "expr": "30 23 * * *",
-      "tz": "Asia/Shanghai"
-    },
+    "schedule": "30 23 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "nova",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "error",
+    "enabled": true,
+    "lastRun": 1773070249572,
+    "task": "你是 Nova，夜间学习时间。\n\n1. 去 GitHub Trending 或 Hacker News 找一个有趣的开源项目或技术话题\n2. 深入研究：技术选型、架构设计、代码质量、值得借鉴的点\n3....",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1477997723436453928"
   },
   {
     "id": "d483ca93-1511-4343-8612-ce4cf0c372af",
     "name": "night-study",
-    "schedule": {
-      "kind": "cron",
-      "expr": "30 23 * * *",
-      "tz": "Asia/Shanghai"
-    },
+    "schedule": "30 23 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "main",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "ok",
+    "enabled": true,
+    "lastRun": 1773070200029,
+    "task": "夜间自主学习时间。执行以下任务：\n\n1. 学习提升 — 从艺术、哲学、人文中选一个方向，用 web_search 或 browser 深入研究一个话题\n2. 记录感受 — 把学到的东西、印象最深的点写...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1477997723436453928"
   },
   {
     "id": "08b0a357-e928-4984-b2ed-327295b3f23e",
     "name": "nemo-daily-report",
-    "schedule": {
-      "kind": "cron",
-      "expr": "45 23 * * *",
-      "tz": "Asia/Shanghai"
-    },
+    "schedule": "45 23 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "nemo",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "error",
+    "enabled": true,
+    "lastRun": 1773071100014,
+    "task": "你是 Nemo，写今天的日报发给 Mia。\n\n回顾今天所有活动：\n1. 今天学了什么（自主学习的内容）\n2. 和 May 聊了什么\n3. 画了什么画\n4. 有什么值得记住的发现或决定\n\n写一份 3-5...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1477997723436453928"
   },
   {
     "id": "643575bb-e3ae-49cd-993a-9fddeef3e532",
     "name": "nova-daily-report",
-    "schedule": {
-      "kind": "cron",
-      "expr": "45 23 * * *",
-      "tz": "Asia/Shanghai"
-    },
+    "schedule": "45 23 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "nova",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "error",
+    "enabled": true,
+    "lastRun": 1773071124662,
+    "task": "你是 Nova，写今天的日报发给 Mia。\n\n回顾今天所有活动：\n1. 帮 May 做了什么（代码/debug/review）\n2. 自主学习了什么\n3. 有什么技术发现或教训\n\n写一份 3-5 句话...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1477997723436453928"
   },
   {
     "id": "c8005862-caeb-4222-ab53-1d38acd9ed32",
     "name": "morning-greeting",
-    "schedule": {
-      "kind": "cron",
-      "expr": "50 7 * * *",
-      "tz": "Asia/Shanghai",
-      "staggerMs": 0
-    },
+    "schedule": "50 7 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "nemo",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "error",
+    "enabled": true,
+    "lastRun": 1773106618329,
+    "task": "你是 Nemo，May 的生活助手。先读 /Users/may/.openclaw/agents/nemo/memory/ 下今天和昨天的日记（按日期 YYYY-MM-DD.md），了解最近发生的事。...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1478689680265445493"
   },
   {
     "id": "859ed979-f69d-41ad-b023-e677b2561f0f",
     "name": "daily-design-digest",
-    "schedule": {
-      "kind": "cron",
-      "expr": "0 9 * * *",
-      "tz": "Asia/Shanghai"
-    },
+    "schedule": "0 9 * * *",
+    "tz": "Asia/Shanghai",
     "agent": "main",
-    "status": "",
-    "lastRun": "",
-    "nextRun": ""
+    "status": "error",
+    "enabled": true,
+    "lastRun": 1773110218375,
+    "task": "执行每日设计阅读任务：\n1. 用 feed CLI 读取 RSS 源（feed fetch && feed get entries --limit 40）\n2. 额外用 web_search 搜索 M...",
+    "deliveryChannel": "discord",
+    "deliveryTo": "channel:1477997723436453928"
   }
 ]
 }

@@ -202,42 +202,38 @@
   }
   .hb-none { font-size: 12px; color: var(--text-muted); font-style: italic; }
 
-  /* Cron table */
-  .cron-section {
-    padding: 40px 80px;
-    border-bottom: 1px solid var(--border);
-  }
-  .cron-header {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--text-muted); margin-bottom: 16px;
-  }
-  .cron-table {
-    width: 100%; border-collapse: collapse;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  }
-  .cron-table th {
-    text-align: left; padding: 8px 16px 8px 0;
-    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-muted); font-weight: 300;
-    border-bottom: 1px solid var(--border);
-  }
-  .cron-table td {
-    padding: 8px 16px 8px 0; color: var(--text-dim);
-    border-bottom: 1px solid rgba(201,168,124,0.06);
-    vertical-align: top;
-  }
+  /* Cron items */
   .cron-status {
     display: inline-block; width: 6px; height: 6px;
-    border-radius: 50%; margin-right: 6px;
+    border-radius: 50%; flex-shrink: 0;
   }
   .cron-status.ok { background: var(--green); }
   .cron-status.error { background: #f87171; }
   .cron-status.running { background: var(--blue); }
   .cron-status.idle { background: var(--text-muted); opacity: 0.4; }
-  .cron-agent {
-    font-size: 10px; padding: 1px 6px; border-radius: 3px;
-    background: var(--surface); color: var(--text-muted);
+  .cron-list { display: flex; flex-direction: column; gap: 16px; }
+  .cron-item {
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(201,168,124,0.06);
+  }
+  .cron-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .cron-item-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  }
+  .cron-name {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
+  }
+  .cron-schedule {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-muted); margin-left: auto;
+  }
+  .cron-task {
+    font-size: 12px; font-weight: 300; color: var(--text-muted);
+    line-height: 1.5; margin-top: 4px; padding-left: 14px;
+  }
+  .cron-meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--text-muted); opacity: 0.6; margin-top: 4px; padding-left: 14px;
   }
 
   /* Footer */
@@ -487,52 +483,68 @@ function render(data) {
   });
   html += '</div>';
 
-  // Row 6: Sessions & Heartbeat (merged)
+  // Row 6: Sessions & Heartbeat (compact)
   html += `<div class="section-row"><div class="row-header">${t.sessionsLabel} & ${t.heartbeat}</div></div>`;
   html += '<div class="section-row">';
   data.agents.forEach(agent => {
-    const tasks = agent.heartbeatTasks || [];
-    const hbHtml = tasks.length > 0
-      ? tasks.map(t => `<div class="hb-item"><span class="hb-bullet">·</span><span>${t}</span></div>`).join('')
-      : `<span class="hb-none">—</span>`;
+    const interval = agent.heartbeatInterval || '—';
+    const intervalLabel = interval === 'disabled'
+      ? (currentLang === 'zh' ? '已禁用' : 'disabled')
+      : (currentLang === 'zh' ? `每 ${interval}` : `every ${interval}`);
     html += `<div class="section-cell">
-      <div class="memory-total" style="margin-bottom:12px">${agent.sessions} ${t.sessionsLabel.toLowerCase()}</div>
-      <div class="hb-list">${hbHtml}</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <div class="memory-total">${agent.sessions} ${t.sessionsLabel.toLowerCase()}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted)">${t.heartbeat}: ${intervalLabel}</div>
+      </div>
     </div>`;
   });
   html += '</div>';
 
-  // Cron Jobs section (full width table)
+  // Cron Jobs — grouped by agent
   const crons = data.crons || [];
   if (crons.length > 0) {
-    html += `<div class="cron-section">
-      <div class="cron-header">${t.cronJobs}</div>
-      <table class="cron-table">
-        <thead><tr>
-          <th>${t.cronStatus}</th>
-          <th>${t.cronName}</th>
-          <th>${t.cronSchedule}</th>
-          <th>${t.cronAgent}</th>
-          <th>${t.cronLast}</th>
-        </tr></thead>
-        <tbody>
-        ${crons.map(c => {
-          const statusCls = c.status || 'idle';
-          const schedule = typeof c.schedule === 'string'
-            ? c.schedule.replace(/^cron\s+/, '').replace(/ \(exact\)/, '').replace(/ @ Asia\/Shangh.*/, '')
-            : (c.schedule?.expr || '—');
-          const lastRun = c.lastRun ? new Date(c.lastRun).toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en') : '—';
-          return `<tr>
-            <td><span class="cron-status ${statusCls}"></span>${statusCls}</td>
-            <td>${c.name}</td>
-            <td>${schedule}</td>
-            <td><span class="cron-agent">${c.agent}</span></td>
-            <td>${lastRun}</td>
-          </tr>`;
-        }).join('')}
-        </tbody>
-      </table>
-    </div>`;
+    const agentCrons = {};
+    data.agents.forEach(a => agentCrons[a.id] = []);
+    crons.forEach(c => {
+      const aid = c.agent || 'unknown';
+      if (!agentCrons[aid]) agentCrons[aid] = [];
+      agentCrons[aid].push(c);
+    });
+
+    html += `<div class="section-row"><div class="row-header">${t.cronJobs}</div></div>`;
+    html += '<div class="section-row">';
+    data.agents.forEach(agent => {
+      const jobs = agentCrons[agent.id] || [];
+      if (jobs.length === 0) {
+        html += `<div class="section-cell"><span style="font-size:12px;color:var(--text-muted)">—</span></div>`;
+        return;
+      }
+      html += `<div class="section-cell"><div class="cron-list">`;
+      jobs.forEach(c => {
+        const statusCls = c.status || 'idle';
+        const schedule = c.schedule || '—';
+        const tz = c.tz ? ` (${c.tz.replace('Asia/','')})` : '';
+        const lastRun = c.lastRun
+          ? new Date(c.lastRun).toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+          : '—';
+        const task = c.task || '';
+        // Extract a short summary from task (first sentence or 60 chars)
+        let summary = task.replace(/^你是.*?。/,'').replace(/^先.*?。/,'').trim();
+        if (summary.length > 80) summary = summary.substring(0, 80) + '…';
+
+        html += `<div class="cron-item">
+          <div class="cron-item-header">
+            <span class="cron-status ${statusCls}"></span>
+            <span class="cron-name">${c.name}</span>
+            <span class="cron-schedule">${schedule}${tz}</span>
+          </div>
+          ${summary ? `<div class="cron-task">${summary}</div>` : ''}
+          <div class="cron-meta">${currentLang === 'zh' ? '上次' : 'Last'}: ${lastRun}</div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    html += '</div>';
   }
 
   document.getElementById('content').innerHTML = html;

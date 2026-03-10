@@ -149,6 +149,15 @@ for agent_dir in "$AGENTS_DIR"/*/; do
         nova) tagline_en="When I'm here, problems get solved." ;;
     esac
 
+    # Heartbeat interval (from openclaw status)
+    heartbeat_interval=""
+    case "$agent" in
+        main) heartbeat_interval="disabled" ;;
+        nemo) heartbeat_interval="1h" ;;
+        nova) heartbeat_interval="2h" ;;
+        *) heartbeat_interval="—" ;;
+    esac
+
     # Heartbeat content (extract tasks — ### headers or top-level bullets)
     heartbeat_tasks="[]"
     if [ -f "$workspace_dir/HEARTBEAT.md" ]; then
@@ -193,6 +202,7 @@ for agent_dir in "$AGENTS_DIR"/*/; do
         "otherFiles": $other_memory
       },
       "sessions": $session_count,
+      "heartbeatInterval": "$heartbeat_interval",
       "heartbeatTasks": $heartbeat_tasks
     }
 EOF
@@ -208,16 +218,27 @@ data = json.load(sys.stdin)
 jobs = data.get('jobs', data if isinstance(data, list) else [])
 out = []
 for j in jobs:
+    sched = j.get('schedule', {})
+    state = j.get('state', {})
+    payload = j.get('payload', {})
+    msg = payload.get('message', '')
+    # Truncate task message to first 100 chars
+    if len(msg) > 100: msg = msg[:100] + '...'
+    delivery = j.get('delivery', {})
     out.append({
         'id': j.get('id',''),
         'name': j.get('name',''),
-        'schedule': j.get('schedule',''),
+        'schedule': sched.get('expr',''),
+        'tz': sched.get('tz',''),
         'agent': j.get('agentId',''),
-        'status': j.get('status',''),
-        'lastRun': j.get('lastRun',''),
-        'nextRun': j.get('nextRun','')
+        'status': state.get('lastStatus','idle'),
+        'enabled': j.get('enabled', True),
+        'lastRun': state.get('lastRunAtMs'),
+        'task': msg,
+        'deliveryChannel': delivery.get('channel',''),
+        'deliveryTo': delivery.get('to',''),
     })
-print(json.dumps(out, indent=2))
+print(json.dumps(out, ensure_ascii=False, indent=2))
 " >> "$OUTPUT" 2>/dev/null
 
 echo '}' >> "$OUTPUT"
