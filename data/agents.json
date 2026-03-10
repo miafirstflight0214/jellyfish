@@ -1,0 +1,85 @@
+{
+  "exported": "2026-03-10T02:36:27Z",
+  "agents": [
+    {
+      "id": "main",
+      "name": "main",
+      "emoji": "",
+      "role": "",
+      "vibe": "",
+      "tagline": "",
+      "soulIntro": "",
+      "config": {
+        "soul": false,
+        "identity": false,
+        "memory": false,
+        "user": false,
+        "heartbeat": false,
+        "tools": false,
+        "agents": false
+      },
+      "memory": {
+        "longTermLines": 0,
+        "lastUpdated": "",
+        "sections": [],
+        "dailyLogs": [],
+        "otherFiles": []
+      },
+      "sessions": 12
+    }
+    ,
+    {
+      "id": "nemo",
+      "name": "Nemo",
+      "emoji": "🐠",
+      "role": "生活助手",
+      "vibe": "",
+      "tagline": "吃喝玩乐的事找我。",
+      "soulIntro": "我是 Nemo 🐠，生活助手。帮 May 处理日常事务，聊天解闷。",
+      "config": {
+        "soul": true,
+        "identity": true,
+        "memory": true,
+        "user": true,
+        "heartbeat": true,
+        "tools": true,
+        "agents": true
+      },
+      "memory": {
+        "longTermLines": 56,
+        "lastUpdated": "2026-03-09T14:04:42",
+        "sections": ["About May","我的职责","协作","学习进度","Cron Jobs","Key Lessons"],
+        "dailyLogs": [{"date":"2026-03-05","lines":5},{"date":"2026-03-06","lines":84},{"date":"2026-03-07","lines":40},{"date":"2026-03-08","lines":44},{"date":"2026-03-09","lines":91}],
+        "otherFiles": [{"name":"art-notes.md","lines":236},{"name":"art-study.md","lines":35},{"name":"art-viewing-list.md","lines":84},{"name":"creative-log.md","lines":32},{"name":"nature-study.md","lines":21}]
+      },
+      "sessions": 11
+    }
+    ,
+    {
+      "id": "nova",
+      "name": "Nova",
+      "emoji": "⚡",
+      "role": "",
+      "vibe": "精确、理性、冷静、可靠",
+      "tagline": "我在的时候，问题会被解决。",
+      "soulIntro": "我是 Nova，代码搭档。和 Mia 一起帮 May 写代码。",
+      "config": {
+        "soul": true,
+        "identity": true,
+        "memory": true,
+        "user": true,
+        "heartbeat": true,
+        "tools": true,
+        "agents": true
+      },
+      "memory": {
+        "longTermLines": 76,
+        "lastUpdated": "2026-03-10T09:16:13",
+        "sections": ["About May","审美偏好","项目","技术教训","技术栈","协作","GitHub 凭据"],
+        "dailyLogs": [{"date":"2026-03-06","lines":129},{"date":"2026-03-07","lines":57},{"date":"2026-03-08","lines":9},{"date":"2026-03-09","lines":29},{"date":"2026-03-10","lines":19}],
+        "otherFiles": [{"name":"gallery-plan.md","lines":25},{"name":"gallery-update-from-nemo.md","lines":8},{"name":"learnings.md","lines":69}]
+      },
+      "sessions": 10
+    }
+  ]
+}

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jellyfish — Agent Control Board</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a25;
+    --border: #2a2a38;
+    --text: #e0ddd8;
+    --text-dim: #706b66;
+    --accent: #c9a87c;
+    --accent-dim: rgba(201,168,124,0.15);
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.12);
+    --red: #f87171;
+    --blue: #60a5fa;
+    --purple: #a78bfa;
+    --radius: 12px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'SF Mono', 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  .header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+
+  .header .meta {
+    color: var(--text-dim);
+    font-size: 11px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .agent-card:hover {
+    border-color: var(--accent);
+  }
+
+  .agent-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .agent-emoji {
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    border-radius: 10px;
+  }
+
+  .agent-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .agent-tagline {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  .agent-id {
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  .section {
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .config-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .config-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .config-badge.active {
+    background: var(--green-dim);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .config-badge.missing {
+    opacity: 0.3;
+    text-decoration: line-through;
+  }
+
+  .memory-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .memory-bar-label {
+    width: 100px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .memory-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .memory-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .memory-bar-value {
+    font-size: 11px;
+    color: var(--text-dim);
+    width: 50px;
+    text-align: right;
+  }
+
+  .log-timeline {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 40px;
+    margin-top: 8px;
+  }
+
+  .log-bar {
+    flex: 1;
+    min-width: 16px;
+    background: var(--accent-dim);
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    cursor: default;
+    transition: background 0.2s;
+  }
+
+  .log-bar:hover {
+    background: var(--accent);
+  }
+
+  .log-bar:hover .log-tooltip {
+    opacity: 1;
+  }
+
+  .log-tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 10;
+  }
+
+  .memory-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .mem-section-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    color: var(--text-dim);
+  }
+
+  .other-files {
+    margin-top: 8px;
+  }
+
+  .other-file {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 11px;
+    color: var(--text-dim);
+    border-bottom: 1px solid rgba(42,42,56,0.5);
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+
+  .stat-label { color: var(--text-dim); }
+  .stat-value { color: var(--text); }
+
+  .overview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+  }
+
+  .overview-stat {
+    text-align: center;
+  }
+
+  .overview-stat .value {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--accent);
+  }
+
+  .overview-stat .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .arch-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  .arch-section h2 {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .arch-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 30px 0;
+    flex-wrap: wrap;
+  }
+
+  .arch-node {
+    width: 120px;
+    text-align: center;
+  }
+
+  .arch-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 8px;
+    transition: border-color 0.3s;
+  }
+
+  .arch-circle.nemo { border-color: var(--green); }
+  .arch-circle.nova { border-color: var(--blue); }
+  .arch-circle.mia { border-color: var(--purple); }
+
+  .arch-label {
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .arch-role {
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .arch-connector {
+    color: var(--text-dim);
+    font-size: 20px;
+  }
+
+  .footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 11px;
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 16px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>JELLYFISH</h1>
+  <span class="meta">Agent Control Board</span>
+  <span class="meta" id="exportTime" style="margin-left:auto"></span>
+</div>
+
+<div class="overview" id="overview"></div>
+
+<div class="arch-section" style="margin-bottom:24px">
+  <h2>Architecture</h2>
+  <div class="arch-diagram">
+    <div class="arch-node">
+      <div class="arch-circle mia">🌊</div>
+      <div class="arch-label">Mia</div>
+      <div class="arch-role">main · 汇总中心</div>
+    </div>
+    <div class="arch-connector">⟷</div>
+    <div class="arch-node">
+      <div class="arch-circle nemo">🐠</div>
+      <div class="arch-label">Nemo</div>
+      <div class="arch-role">生活助手</div>
+    </div>
+    <div class="arch-connector">⟷</div>
+    <div class="arch-node">
+      <div class="arch-circle nova">⚡</div>
+      <div class="arch-label">Nova</div>
+      <div class="arch-role">代码搭档</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid" id="agentGrid"></div>
+
+<div class="footer">
+  Jellyfish — OpenClaw Agent Dashboard · <span id="footerTime"></span>
+</div>
+
+<script>
+fetch('data/agents.json')
+  .then(r => r.json())
+  .then(data => render(data))
+  .catch(e => {
+    document.getElementById('agentGrid').innerHTML =
+      `<div style="color:var(--red);padding:40px;text-align:center">
+        Failed to load data/agents.json<br>
+        <span style="color:var(--text-dim);font-size:11px">Run ./export.sh first</span>
+      </div>`;
+  });
+
+function render(data) {
+  const exported = new Date(data.exported);
+  document.getElementById('exportTime').textContent =
+    `Last export: ${exported.toLocaleString()}`;
+  document.getElementById('footerTime').textContent =
+    exported.toLocaleString();
+
+  // Overview
+  const totalMemory = data.agents.reduce((s,a) => s + a.memory.longTermLines, 0);
+  const totalLogs = data.agents.reduce((s,a) => s + a.memory.dailyLogs.length, 0);
+  const totalSessions = data.agents.reduce((s,a) => s + a.sessions, 0);
+  const totalOther = data.agents.reduce((s,a) => s + a.memory.otherFiles.length, 0);
+  const configCount = data.agents.reduce((s,a) => {
+    return s + Object.values(a.config).filter(Boolean).length;
+  }, 0);
+
+  document.getElementById('overview').innerHTML = `
+    <div class="overview-grid">
+      <div class="overview-stat">
+        <div class="value">${data.agents.length}</div>
+        <div class="label">Agents</div>
+      </div>
+      <div class="overview-stat">
+        <div class="value">${totalMemory}</div>
+        <div class="label">Memory Lines</div>
+      </div>
+      <div class="overview-stat">
+        <div class="value">${totalLogs}</div>
+        <div class="label">Daily Logs</div>
+      </div>
+      <div class="overview-stat">
+        <div class="value">${totalOther + data.agents.length}</div>
+        <div class="label">Knowledge Files</div>
+      </div>
+      <div class="overview-stat">
+        <div class="value">${totalSessions}</div>
+        <div class="label">Sessions</div>
+      </div>
+      <div class="overview-stat">
+        <div class="value">${configCount}/21</div>
+        <div class="label">Config Coverage</div>
+      </div>
+    </div>
+  `;
+
+  // Agent cards
+  const maxMemory = Math.max(...data.agents.map(a => a.memory.longTermLines), 1);
+  const maxLogs = Math.max(...data.agents.flatMap(a => a.memory.dailyLogs.map(l => l.lines)), 1);
+
+  const grid = document.getElementById('agentGrid');
+  grid.innerHTML = data.agents.map(agent => {
+    const emoji = agent.emoji || (agent.id === 'main' ? '🌊' : '?');
+    const name = agent.name || agent.id;
+    const tagline = agent.tagline || agent.soulIntro || '';
+
+    // Config badges
+    const configs = ['soul','identity','memory','user','heartbeat','tools','agents'];
+    const configBadges = configs.map(c =>
+      `<span class="config-badge ${agent.config[c] ? 'active' : 'missing'}">${c}</span>`
+    ).join('');
+
+    // Memory bar
+    const memPct = maxMemory > 0 ? (agent.memory.longTermLines / maxMemory * 100) : 0;
+    const colors = { main: 'var(--purple)', nemo: 'var(--green)', nova: 'var(--blue)' };
+    const color = colors[agent.id] || 'var(--accent)';
+
+    // Log timeline
+    const logBars = agent.memory.dailyLogs.map(log => {
+      const h = Math.max(6, (log.lines / maxLogs) * 36);
+      return `<div class="log-bar" style="height:${h}px;background:${color};opacity:0.35">
+        <div class="log-tooltip">${log.date}: ${log.lines} lines</div>
+      </div>`;
+    }).join('');
+
+    // Memory sections
+    const sectionTags = agent.memory.sections.map(s =>
+      `<span class="mem-section-tag">${s}</span>`
+    ).join('');
+
+    // Other files
+    const otherFiles = agent.memory.otherFiles.map(f =>
+      `<div class="other-file"><span>${f.name}</span><span>${f.lines}L</span></div>`
+    ).join('');
+
+    return `
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-emoji">${emoji}</div>
+          <div>
+            <div class="agent-name">${name}</div>
+            ${tagline ? `<div class="agent-tagline">${tagline}</div>` : ''}
+          </div>
+          <span class="agent-id">${agent.id}</span>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Configuration</div>
+          <div class="config-grid">${configBadges}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Long-term Memory</div>
+          <div class="memory-bar">
+            <span class="memory-bar-label">MEMORY.md</span>
+            <div class="memory-bar-track">
+              <div class="memory-bar-fill" style="width:${memPct}%;background:${color}"></div>
+            </div>
+            <span class="memory-bar-value">${agent.memory.longTermLines}L</span>
+          </div>
+          ${agent.memory.lastUpdated ?
+            `<div style="font-size:10px;color:var(--text-dim)">Updated: ${agent.memory.lastUpdated}</div>` : ''}
+          ${sectionTags ? `<div class="memory-sections">${sectionTags}</div>` : ''}
+        </div>
+
+        <div class="section">
+          <div class="section-title">Daily Logs (${agent.memory.dailyLogs.length} days)</div>
+          <div class="log-timeline">${logBars || '<span style="color:var(--text-dim);font-size:11px">No logs</span>'}</div>
+        </div>
+
+        ${otherFiles ? `
+        <div class="section">
+          <div class="section-title">Knowledge Files</div>
+          <div class="other-files">${otherFiles}</div>
+        </div>` : ''}
+
+        <div class="section">
+          <div class="stat-row">
+            <span class="stat-label">Sessions</span>
+            <span class="stat-value">${agent.sessions}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+</script>
+
+</body>
+</html>
