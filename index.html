@@ -487,18 +487,24 @@ function render(data) {
 
   // Row 4: Knowledge Files
   html += `<div class="section-row"><div class="row-header">${t.knowledgeFiles}</div></div>`;
+  // Shared files row (spans all columns)
+  const sharedFiles = data.shared || [];
+  if (sharedFiles.length > 0) {
+    html += '<div class="section-row">';
+    html += '<div class="section-cell" style="grid-column:1/-1"><div class="knowledge-list" style="display:flex;flex-wrap:wrap;gap:4px 24px">';
+    sharedFiles.forEach(f => {
+      const name = f.name.split('/').pop();
+      html += `<div class="knowledge-item"><span><span style="font-size:9px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:1px 4px;margin-right:6px;opacity:0.8">shared</span>${name}</span><span>${f.lines}L</span></div>`;
+    });
+    html += '</div></div></div>';
+  }
+  // Per-agent files
   html += '<div class="section-row">';
-  const sharedItems = (data.shared || []).map(f => {
-    const name = f.name.split('/').pop();
-    return `<div class="knowledge-item"><span>${name} <span style="font-size:9px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:1px 4px;margin-left:4px;opacity:0.8">shared</span></span><span>${f.lines}L</span></div>`;
-  }).join('');
-  data.agents.forEach((agent, i) => {
+  data.agents.forEach(agent => {
     const agentList = agent.memory.otherFiles.map(f =>
       `<div class="knowledge-item"><span>${f.name}</span><span>${f.lines}L</span></div>`
-    ).join('');
-    // Show shared files only in first agent column
-    const combined = (agentList + (i === 0 ? sharedItems : '')) || `<span style="font-size:12px;color:var(--text-muted)">—</span>`;
-    html += `<div class="section-cell"><div class="knowledge-list">${combined}</div></div>`;
+    ).join('') || `<span style="font-size:12px;color:var(--text-muted)">—</span>`;
+    html += `<div class="section-cell"><div class="knowledge-list">${agentList}</div></div>`;
   });
   html += '</div>';
 
