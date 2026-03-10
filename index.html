@@ -488,26 +488,19 @@ function render(data) {
   // Row 4: Knowledge Files
   html += `<div class="section-row"><div class="row-header">${t.knowledgeFiles}</div></div>`;
   html += '<div class="section-row">';
-  data.agents.forEach(agent => {
-    const list = agent.memory.otherFiles.map(f =>
+  const sharedItems = (data.shared || []).map(f => {
+    const name = f.name.split('/').pop();
+    return `<div class="knowledge-item"><span>${name} <span style="font-size:9px;color:var(--accent);opacity:0.7;margin-left:4px">shared</span></span><span>${f.lines}L</span></div>`;
+  }).join('');
+  data.agents.forEach((agent, i) => {
+    const agentList = agent.memory.otherFiles.map(f =>
       `<div class="knowledge-item"><span>${f.name}</span><span>${f.lines}L</span></div>`
-    ).join('') || `<span style="font-size:12px;color:var(--text-muted)">—</span>`;
-    html += `<div class="section-cell"><div class="knowledge-list">${list}</div></div>`;
+    ).join('');
+    // Show shared files only in first agent column
+    const combined = (agentList + (i === 0 ? sharedItems : '')) || `<span style="font-size:12px;color:var(--text-muted)">—</span>`;
+    html += `<div class="section-cell"><div class="knowledge-list">${combined}</div></div>`;
   });
   html += '</div>';
-
-  // Row 5: Shared Knowledge
-  if (data.shared && data.shared.length > 0) {
-    html += `<div class="section-row"><div class="row-header">${currentLang === 'zh' ? '共享知识库' : 'Shared Knowledge'} <span style="font-size:10px;color:var(--text-muted);font-weight:400;margin-left:8px">art-study/</span></div></div>`;
-    html += '<div class="section-row">';
-    html += '<div class="section-cell" style="grid-column:1/-1">';
-    html += '<div class="knowledge-list" style="display:flex;flex-wrap:wrap;gap:8px 24px">';
-    data.shared.forEach(f => {
-      html += `<div class="knowledge-item" style="min-width:200px"><span>${f.name}</span><span>${f.lines}L</span></div>`;
-    });
-    html += '</div></div>';
-    html += '</div>';
-  }
 
   // Row 6: Sessions & Heartbeat (compact)
   html += `<div class="section-row"><div class="row-header">${t.sessionsLabel} & ${t.heartbeat}</div></div>`;
