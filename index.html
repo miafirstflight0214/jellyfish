@@ -202,7 +202,7 @@
   }
   .hb-none { font-size: 12px; color: var(--text-muted); font-style: italic; }
 
-  /* Cron items */
+  /* Cron cards */
   .cron-status {
     display: inline-block; width: 6px; height: 6px;
     border-radius: 50%; flex-shrink: 0;
@@ -211,29 +211,28 @@
   .cron-status.error { background: #f87171; }
   .cron-status.running { background: var(--blue); }
   .cron-status.idle { background: var(--text-muted); opacity: 0.4; }
-  .cron-list { display: flex; flex-direction: column; gap: 16px; }
-  .cron-item {
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(201,168,124,0.06);
+  .cron-list { display: flex; flex-direction: column; gap: 12px; }
+  .cron-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 16px;
   }
-  .cron-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .cron-item-header {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  .cron-card-top {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
   }
   .cron-name {
     font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
   }
-  .cron-schedule {
+  .cron-time {
     font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    color: var(--text-muted); margin-left: auto;
+    color: var(--accent); margin-left: auto; white-space: nowrap;
   }
   .cron-task {
     font-size: 12px; font-weight: 300; color: var(--text-muted);
-    line-height: 1.5; margin-top: 4px; padding-left: 14px;
+    line-height: 1.6; margin-bottom: 8px;
   }
   .cron-meta {
     font-family: 'JetBrains Mono', monospace; font-size: 9px;
-    color: var(--text-muted); opacity: 0.6; margin-top: 4px; padding-left: 14px;
+    color: var(--text-muted); opacity: 0.5;
   }
 
   /* Footer */
@@ -345,6 +344,19 @@ function updateToggles() {
   const t = i18n[currentLang];
   document.getElementById('langBtn').textContent = t.langBtn;
   document.getElementById('themeBtn').textContent = currentTheme === 'dark' ? t.themeLight : t.themeDark;
+}
+
+function cronToTime(expr, tz) {
+  // Parse "M H * * *" style cron to readable time
+  if (!expr) return '—';
+  const parts = expr.split(/\s+/);
+  if (parts.length < 2) return expr;
+  const min = parts[0], hour = parts[1];
+  const pad = n => String(n).padStart(2, '0');
+  if (hour.includes(',')) {
+    return hour.split(',').map(h => `${pad(h)}:${pad(min)}`).join(' / ');
+  }
+  return `${pad(hour)}:${pad(min)}`;
 }
 
 fetch('data/agents.json')
@@ -522,21 +534,19 @@ function render(data) {
       html += `<div class="section-cell"><div class="cron-list">`;
       jobs.forEach(c => {
         const statusCls = c.status || 'idle';
-        const schedule = c.schedule || '—';
-        const tz = c.tz ? ` (${c.tz.replace('Asia/','')})` : '';
+        const timeStr = cronToTime(c.schedule, c.tz);
         const lastRun = c.lastRun
           ? new Date(c.lastRun).toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
           : '—';
         const task = c.task || '';
-        // Extract a short summary from task (first sentence or 60 chars)
         let summary = task.replace(/^你是.*?。/,'').replace(/^先.*?。/,'').trim();
         if (summary.length > 80) summary = summary.substring(0, 80) + '…';
 
-        html += `<div class="cron-item">
-          <div class="cron-item-header">
+        html += `<div class="cron-card">
+          <div class="cron-card-top">
             <span class="cron-status ${statusCls}"></span>
             <span class="cron-name">${c.name}</span>
-            <span class="cron-schedule">${schedule}${tz}</span>
+            <span class="cron-time">${timeStr}</span>
           </div>
           ${summary ? `<div class="cron-task">${summary}</div>` : ''}
           <div class="cron-meta">${currentLang === 'zh' ? '上次' : 'Last'}: ${lastRun}</div>
