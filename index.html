@@ -20,6 +20,20 @@
     --purple: #b8a0d8;
   }
 
+  html[data-theme="light"] {
+    --bg: #f5f3f0;
+    --surface: #eae7e3;
+    --border: rgba(120,100,80,0.15);
+    --text: #2a2825;
+    --text-dim: #6b6560;
+    --text-muted: #9a9590;
+    --accent: #8b7355;
+    --accent-dim: rgba(139,115,85,0.08);
+    --green: #4a9960;
+    --blue: #4a7fa0;
+    --purple: #7a60a0;
+  }
+
   * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
@@ -28,6 +42,7 @@
     font-family: 'Fraunces', Georgia, serif;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
+    transition: background 0.4s, color 0.4s;
   }
 
   /* — Masthead — */
@@ -35,7 +50,7 @@
     padding: 60px 80px 40px;
     border-bottom: 1px solid var(--border);
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
   }
 
@@ -47,12 +62,39 @@
     color: var(--accent);
   }
 
+  .masthead-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
   .masthead .issue {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: 300;
     color: var(--text-muted);
     letter-spacing: 0.05em;
+  }
+
+  .toggle-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s;
+  }
+
+  .toggle-btn:hover { color: var(--text); }
+
+  .toggle-sep {
+    color: var(--border);
+    font-size: 12px;
+    user-select: none;
   }
 
   /* — Hero — */
@@ -179,13 +221,6 @@
     margin-top: 20px;
   }
 
-  .detail-value {
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
   .config-dots {
     display: flex;
     gap: 6px;
@@ -224,7 +259,6 @@
 
   .config-dot:hover .dot-tip { opacity: 1; }
 
-  /* Memory visualization */
   .memory-graph {
     display: flex;
     align-items: flex-end;
@@ -244,10 +278,7 @@
   }
 
   .mem-bar:hover { opacity: 1; }
-
-  .mem-bar:hover .bar-tip {
-    opacity: 1;
-  }
+  .mem-bar:hover .bar-tip { opacity: 1; }
 
   .bar-tip {
     position: absolute;
@@ -293,9 +324,7 @@
     opacity: 0.5;
   }
 
-  .knowledge-list {
-    margin-top: 8px;
-  }
+  .knowledge-list { margin-top: 8px; }
 
   .knowledge-item {
     display: flex;
@@ -313,7 +342,6 @@
     color: var(--text-muted);
   }
 
-  /* — Footer — */
   .colophon {
     padding: 40px 80px;
     border-top: 1px solid var(--border);
@@ -343,11 +371,17 @@
 
 <header class="masthead">
   <h1>Jellyfish</h1>
-  <span class="issue" id="issueDate"></span>
+  <div class="masthead-right">
+    <span class="issue" id="issueDate"></span>
+    <span class="toggle-sep">·</span>
+    <button class="toggle-btn" id="langBtn" onclick="toggleLang()">中文</button>
+    <span class="toggle-sep">·</span>
+    <button class="toggle-btn" id="themeBtn" onclick="toggleTheme()">Light</button>
+  </div>
 </header>
 
 <section class="hero">
-  <h2 class="hero-title">Running beneath<br>the surface.</h2>
+  <h2 class="hero-title" id="heroTitle">Running beneath<br>the surface.</h2>
   <p class="hero-sub" id="heroSub"></p>
 </section>
 
@@ -361,38 +395,97 @@
 </footer>
 
 <script>
+const i18n = {
+  en: {
+    hero: 'Running beneath<br>the surface.',
+    heroSub: (mem, lines, days) => `${mem} lines of long-term memory · ${lines} lines across ${days} daily logs`,
+    agents: 'Agents', sessions: 'Sessions', memory: 'Memory',
+    dailyLogs: 'Daily Logs', knowledge: 'Knowledge', config: 'Config',
+    configuration: 'Configuration', longTermMemory: 'Long-term Memory',
+    dailyActivity: 'Daily Activity', knowledgeFiles: 'Knowledge Files',
+    lines: 'lines', noLogs: 'No logs yet',
+    langBtn: '中文', themeLight: 'Light', themeDark: 'Dark',
+  },
+  zh: {
+    hero: '运行在<br>表面之下。',
+    heroSub: (mem, lines, days) => `${mem} 行长期记忆 · ${days} 天日志共 ${lines} 行`,
+    agents: '智能体', sessions: '会话', memory: '记忆',
+    dailyLogs: '日志', knowledge: '知识库', config: '配置',
+    configuration: '配置状态', longTermMemory: '长期记忆',
+    dailyActivity: '每日活动', knowledgeFiles: '知识文件',
+    lines: '行', noLogs: '暂无日志',
+    langBtn: 'EN', themeLight: '浅色', themeDark: '深色',
+  }
+};
+
+let currentLang = localStorage.getItem('jf-lang') || 'en';
+let currentTheme = localStorage.getItem('jf-theme') || 'dark';
+let agentData = null;
+
+if (currentTheme === 'light') document.documentElement.dataset.theme = 'light';
+
+function toggleLang() {
+  currentLang = currentLang === 'en' ? 'zh' : 'en';
+  localStorage.setItem('jf-lang', currentLang);
+  document.documentElement.lang = currentLang;
+  if (agentData) render(agentData);
+  updateToggles();
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('jf-theme', currentTheme);
+  document.documentElement.dataset.theme = currentTheme === 'light' ? 'light' : '';
+  if (currentTheme === 'dark') delete document.documentElement.dataset.theme;
+  updateToggles();
+}
+
+function updateToggles() {
+  const t = i18n[currentLang];
+  document.getElementById('langBtn').textContent = t.langBtn;
+  document.getElementById('themeBtn').textContent = currentTheme === 'dark' ? t.themeLight : t.themeDark;
+}
+
 fetch('data/agents.json')
   .then(r => r.json())
-  .then(render)
+  .then(data => { agentData = data; render(data); updateToggles(); })
   .catch(() => {
     document.getElementById('profiles').innerHTML =
       '<div style="padding:80px;text-align:center;color:var(--text-muted);font-style:italic">Run ./export.sh to generate data</div>';
   });
 
 function render(data) {
+  const t = i18n[currentLang];
   const d = new Date(data.exported);
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const dateStr = `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  const zhMonths = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+  const dateStr = currentLang === 'zh'
+    ? `${d.getFullYear()}年${zhMonths[d.getMonth()]}${d.getDate()}日`
+    : `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 
   document.getElementById('issueDate').textContent = dateStr;
-  document.getElementById('footerExport').textContent = `Exported ${d.toLocaleString()}`;
+  document.getElementById('footerExport').textContent =
+    currentLang === 'zh' ? `导出于 ${d.toLocaleString('zh-CN')}` : `Exported ${d.toLocaleString()}`;
+
+  document.getElementById('heroTitle').innerHTML = t.hero;
 
   const totalMemory = data.agents.reduce((s,a) => s + a.memory.longTermLines, 0);
-  const totalLogs = data.agents.reduce((s,a) => s + a.memory.dailyLogs.reduce((ss,l) => ss+l.lines, 0), 0);
+  const totalLogLines = data.agents.reduce((s,a) => s + a.memory.dailyLogs.reduce((ss,l) => ss+l.lines, 0), 0);
+  const totalDays = data.agents.reduce((s,a) => s + a.memory.dailyLogs.length, 0);
   const totalSessions = data.agents.reduce((s,a) => s + a.sessions, 0);
   const totalFiles = data.agents.reduce((s,a) => s + a.memory.otherFiles.length, 0);
   const configured = data.agents.reduce((s,a) => s + Object.values(a.config).filter(Boolean).length, 0);
 
-  document.getElementById('heroSub').textContent =
-    `${totalMemory} lines of long-term memory · ${totalLogs} lines across ${data.agents.reduce((s,a)=>s+a.memory.dailyLogs.length,0)} daily logs`;
+  document.getElementById('heroSub').textContent = t.heroSub(totalMemory, totalLogLines, totalDays);
 
   document.getElementById('statsStrip').innerHTML = [
-    ['Agents', data.agents.length],
-    ['Sessions', totalSessions],
-    ['Memory', `${totalMemory}L`],
-    ['Daily Logs', data.agents.reduce((s,a)=>s+a.memory.dailyLogs.length,0)],
-    ['Knowledge', totalFiles],
-    ['Config', `${configured}/21`],
+    [t.agents, data.agents.length],
+    [t.sessions, totalSessions],
+    [t.memory, `${totalMemory}L`],
+    [t.dailyLogs, totalDays],
+    [t.knowledge, totalFiles],
+    [t.config, `${configured}/21`],
   ].map(([label, value]) => `
     <div class="stat-cell">
       <div class="stat-number">${value}</div>
@@ -422,7 +515,7 @@ function render(data) {
       return `<div class="mem-bar" style="height:${h}px;background:${barColor}">
         <span class="bar-tip">${log.date.replace('2026-','')}: ${log.lines}L</span>
       </div>`;
-    }).join('') || '<span style="font-size:12px;color:var(--text-muted);font-style:italic">No logs yet</span>';
+    }).join('') || `<span style="font-size:12px;color:var(--text-muted);font-style:italic">${t.noLogs}</span>`;
 
     const sectionsList = agent.memory.sections.map(s =>
       `<span class="section-item">${s}</span>`
@@ -438,27 +531,25 @@ function render(data) {
         <span class="profile-emoji">${emoji}</span>
         <div class="profile-name">${name}</div>
         <div class="profile-tagline">${agent.tagline || ''}</div>
-
         ${agent.soulIntro ? `<div class="profile-intro">${agent.soulIntro}</div>` : ''}
-
         <div class="profile-divider"></div>
 
-        <div class="detail-label">Configuration</div>
+        <div class="detail-label">${t.configuration}</div>
         <div class="config-dots">${configDots}</div>
 
-        <div class="detail-label">Long-term Memory</div>
-        <div class="memory-total">${agent.memory.longTermLines} lines</div>
+        <div class="detail-label">${t.longTermMemory}</div>
+        <div class="memory-total">${agent.memory.longTermLines} ${t.lines}</div>
         ${sectionsList ? `<div class="sections-list">${sectionsList}</div>` : ''}
 
-        <div class="detail-label">Daily Activity</div>
+        <div class="detail-label">${t.dailyActivity}</div>
         <div class="memory-graph">${logBars}</div>
 
         ${knowledgeList ? `
-        <div class="detail-label">Knowledge Files</div>
+        <div class="detail-label">${t.knowledgeFiles}</div>
         <div class="knowledge-list">${knowledgeList}</div>
         ` : ''}
 
-        <div class="detail-label">Sessions</div>
+        <div class="detail-label">${t.sessions}</div>
         <div class="memory-total">${agent.sessions}</div>
       </div>
     `;
