@@ -259,14 +259,33 @@
   }
 
   @media (max-width: 900px) {
-    .masthead, .hero, .colophon { padding-left: 32px; padding-right: 32px; }
-    .hero-title { font-size: 42px; }
+    .masthead, .hero, .colophon { padding-left: 24px; padding-right: 24px; }
+    .hero { padding-top: 48px; padding-bottom: 40px; }
+    .hero-title { font-size: 36px; }
+    .hero-sub { font-size: 14px; }
     .section-row { grid-template-columns: 1fr; }
     .section-cell { border-right: none; }
     .stats-strip { flex-wrap: wrap; }
-    .stat-cell { min-width: 50%; }
-    .row-header { padding-left: 32px; }
-    .section-cell, .agent-header-cell { padding-left: 32px; padding-right: 32px; }
+    .stat-cell { min-width: 50%; padding: 20px 16px; }
+    .stat-number { font-size: 28px; }
+    .row-header { padding-left: 24px; }
+    .section-cell, .agent-header-cell { padding: 24px; }
+    .profile-name { font-size: 26px; }
+    .colophon { flex-direction: column; gap: 8px; }
+    .cron-card { margin: 0; }
+    .config-tree { font-size: 10px; }
+  }
+  @media (max-width: 480px) {
+    .masthead { padding: 20px 16px; flex-wrap: wrap; gap: 8px; }
+    .masthead h1 { font-size: 10px; }
+    .hero { padding: 32px 16px 28px; }
+    .hero-title { font-size: 28px; }
+    .stat-cell { min-width: 33.3%; padding: 16px 8px; }
+    .stat-number { font-size: 22px; }
+    .stat-label { font-size: 8px; }
+    .section-cell, .agent-header-cell { padding: 16px; }
+    .row-header { padding-left: 16px; }
+    .colophon { padding: 24px 16px; }
   }
 </style>
 </head>
