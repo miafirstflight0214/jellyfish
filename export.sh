@@ -95,7 +95,23 @@ for agent_dir in "$AGENTS_DIR"/*/; do
         session_count=$(ls "$agent_dir"/sessions/*.jsonl 2>/dev/null | wc -l | tr -d ' ')
     fi
 
-    # Config files present
+    # Config files with line counts
+    config_files="["
+    cf_first=true
+    for cf_name in SOUL.md IDENTITY.md MEMORY.md USER.md HEARTBEAT.md TOOLS.md AGENTS.md; do
+        $cf_first || config_files="$config_files,"
+        cf_first=false
+        cf_path="$workspace_dir/$cf_name"
+        if [ -f "$cf_path" ]; then
+            cf_lines=$(wc -l < "$cf_path" | tr -d ' ')
+            config_files="$config_files{\"name\":\"$cf_name\",\"exists\":true,\"lines\":$cf_lines}"
+        else
+            config_files="$config_files{\"name\":\"$cf_name\",\"exists\":false,\"lines\":0}"
+        fi
+    done
+    config_files="$config_files]"
+
+    # Backward compat booleans
     has_soul=$([ -f "$workspace_dir/SOUL.md" ] && echo true || echo false)
     has_identity=$([ -f "$workspace_dir/IDENTITY.md" ] && echo true || echo false)
     has_memory=$([ -f "$workspace_dir/MEMORY.md" ] && echo true || echo false)
@@ -136,6 +152,7 @@ for agent_dir in "$AGENTS_DIR"/*/; do
         "tools": $has_tools,
         "agents": $has_agents
       },
+      "configFiles": $config_files,
       "memory": {
         "longTermLines": $memory_lines,
         "lastUpdated": "$memory_updated",

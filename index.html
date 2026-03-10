@@ -221,43 +221,65 @@
     margin-top: 20px;
   }
 
-  .config-dots {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+  .config-tree {
     margin-top: 4px;
-  }
-
-  .config-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    opacity: 0.2;
-    position: relative;
-    cursor: default;
-  }
-
-  .config-dot.active { opacity: 1; }
-  .config-dot.active.c-green { background: var(--green); }
-  .config-dot.active.c-blue { background: var(--blue); }
-  .config-dot.active.c-purple { background: var(--purple); }
-
-  .config-dot .dot-tip {
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
+    font-size: 11px;
+    line-height: 1.8;
   }
 
-  .config-dot:hover .dot-tip { opacity: 1; }
+  .config-tree .tree-root {
+    color: var(--text-dim);
+    margin-bottom: 2px;
+  }
+
+  .config-tree .tree-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-left: 16px;
+    color: var(--text-dim);
+  }
+
+  .config-tree .tree-item.missing {
+    opacity: 0.25;
+  }
+
+  .config-tree .tree-branch {
+    color: var(--text-muted);
+    width: 16px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .config-tree .tree-icon {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 2px;
+    display: inline-block;
+  }
+
+  .config-tree .tree-lines {
+    color: var(--text-muted);
+    font-size: 9px;
+    margin-left: auto;
+  }
+
+  .config-tree .tree-group {
+    margin-top: 6px;
+  }
+
+  .config-tree .tree-group-label {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0.6;
+    padding-left: 16px;
+    margin-bottom: 2px;
+  }
 
   .memory-graph {
     display: flex;
@@ -504,11 +526,31 @@ function render(data) {
     const colorClass = colors[agent.id] || 'c-purple';
     const barColor = bgColors[agent.id] || 'var(--accent)';
 
-    const configDots = configs.map(c =>
-      `<div class="config-dot ${agent.config[c] ? 'active' : ''} ${colorClass}">
-        <span class="dot-tip">${c}</span>
-      </div>`
-    ).join('');
+    // Config file tree
+    const cfGroups = {
+      persona: { en: 'persona', zh: '人格', files: ['SOUL.md','IDENTITY.md'] },
+      knowledge: { en: 'knowledge', zh: '知识', files: ['MEMORY.md','USER.md'] },
+      behavior: { en: 'behavior', zh: '行为', files: ['HEARTBEAT.md','TOOLS.md','AGENTS.md'] },
+    };
+    const cfData = agent.configFiles || configs.map(c => ({name: c.toUpperCase()+'.md', exists: agent.config[c], lines: 0}));
+    const cfMap = {};
+    cfData.forEach(f => cfMap[f.name] = f);
+
+    let configTree = `<div class="config-tree"><div class="tree-root">${agent.id}/</div>`;
+    for (const [gk, gv] of Object.entries(cfGroups)) {
+      configTree += `<div class="tree-group"><div class="tree-group-label">${gv[currentLang]}</div>`;
+      gv.files.forEach((fname, fi) => {
+        const f = cfMap[fname] || {exists:false, lines:0};
+        const isLast = fi === gv.files.length - 1;
+        const branch = isLast ? '└─' : '├─';
+        const cls = f.exists ? '' : ' missing';
+        const dot = f.exists ? `<span class="tree-icon" style="background:${barColor}"></span>` : `<span class="tree-icon" style="background:var(--text-muted);opacity:0.3"></span>`;
+        const lines = f.exists ? `<span class="tree-lines">${f.lines}L</span>` : `<span class="tree-lines">—</span>`;
+        configTree += `<div class="tree-item${cls}"><span class="tree-branch">${branch}</span>${dot} ${fname} ${lines}</div>`;
+      });
+      configTree += '</div>';
+    }
+    configTree += '</div>';
 
     const logBars = agent.memory.dailyLogs.map(log => {
       const h = Math.max(5, (log.lines / maxLogLines) * 44);
@@ -535,7 +577,7 @@ function render(data) {
         <div class="profile-divider"></div>
 
         <div class="detail-label">${t.configuration}</div>
-        <div class="config-dots">${configDots}</div>
+        ${configTree}
 
         <div class="detail-label">${t.longTermMemory}</div>
         <div class="memory-total">${agent.memory.longTermLines} ${t.lines}</div>
