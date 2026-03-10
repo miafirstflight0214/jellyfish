@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T03:32:20Z",
+  "exported": "2026-03-10T03:37:11Z",
   "agents": [
     {
       "id": "main",
@@ -8,7 +8,9 @@
       "role": "",
       "vibe": "Curious, thoughtful, present",
       "tagline": "This isn't just metadata. It's the start of figuring out who I am.",
+      "taglineEn": "This isn't just metadata. It's the start of figuring out who I am.",
       "soulIntro": "",
+      "soulIntroEn": "The central hub. Coordinates Nemo and Nova, manages shared knowledge.",
       "config": {
         "soul": true,
         "identity": true,
@@ -36,7 +38,9 @@
       "role": "生活助手",
       "vibe": "",
       "tagline": "吃喝玩乐的事找我。",
+      "taglineEn": "Come to me for food, fun, and daily life.",
       "soulIntro": "我是 Nemo 🐠，生活助手。帮 May 处理日常事务，聊天解闷。",
+      "soulIntroEn": "Life assistant. Handles daily affairs, finds food and fun for May.",
       "config": {
         "soul": true,
         "identity": true,
@@ -64,7 +68,9 @@
       "role": "",
       "vibe": "精确、理性、冷静、可靠",
       "tagline": "我在的时候，问题会被解决。",
+      "taglineEn": "When I'm here, problems get solved.",
       "soulIntro": "我是 Nova，代码搭档。和 Mia 一起帮 May 写代码。",
+      "soulIntroEn": "Code partner. Writes code alongside Mia, helps May ship projects.",
       "config": {
         "soul": true,
         "identity": true,

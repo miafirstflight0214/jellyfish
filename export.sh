@@ -43,9 +43,16 @@ for agent_dir in "$AGENTS_DIR"/*/; do
 
     # Soul - first line of "我是谁" section
     soul_intro=""
+    soul_intro_en=""
     if [ -f "$workspace_dir/SOUL.md" ]; then
         soul_intro=$(awk '/^## 我是谁/{getline; if($0!="") print; exit}' "$workspace_dir/SOUL.md" | tr -d '\r')
     fi
+    # English intro mappings
+    case "$agent" in
+        main) soul_intro_en="The central hub. Coordinates Nemo and Nova, manages shared knowledge." ;;
+        nemo) soul_intro_en="Life assistant. Handles daily affairs, finds food and fun for May." ;;
+        nova) soul_intro_en="Code partner. Writes code alongside Mia, helps May ship projects." ;;
+    esac
 
     # Memory stats
     memory_file="$workspace_dir/MEMORY.md"
@@ -134,6 +141,14 @@ for agent_dir in "$AGENTS_DIR"/*/; do
         memory_sections="$memory_sections]"
     fi
 
+    # English tagline mappings
+    tagline_en=""
+    case "$agent" in
+        main) tagline_en="This isn't just metadata. It's the start of figuring out who I am." ;;
+        nemo) tagline_en="Come to me for food, fun, and daily life." ;;
+        nova) tagline_en="When I'm here, problems get solved." ;;
+    esac
+
     cat >> "$OUTPUT" << EOF
     {
       "id": "$agent",
@@ -142,7 +157,9 @@ for agent_dir in "$AGENTS_DIR"/*/; do
       "role": "$role",
       "vibe": "$vibe",
       "tagline": "$tagline",
+      "taglineEn": "$tagline_en",
       "soulIntro": "$soul_intro",
+      "soulIntroEn": "$soul_intro_en",
       "config": {
         "soul": $has_soul,
         "identity": $has_identity,
