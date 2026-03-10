@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T07:21:55Z",
+  "exported": "2026-03-10T07:23:26Z",
   "agents": [
     {
       "id": "main",
@@ -26,7 +26,7 @@
         "lastUpdated": "2026-03-09T14:05:52",
         "sections": ["快速导航","About May","About Me (Mia)","Projects","Nemo & Nova","Key Lessons (摘要)","Token 用量 (截至 03-07)"],
         "dailyLogs": [{"date":"2026-03-06","lines":750},{"date":"2026-03-07","lines":269},{"date":"2026-03-08","lines":91},{"date":"2026-03-09","lines":117},{"date":"2026-03-10","lines":72}],
-        "otherFiles": [{"name":"architecture-decisions.md","lines":81},{"name":"art-journal.md","lines":176},{"name":"book-reading.md","lines":17},{"name":"pending.md","lines":52},{"name":"token-usage.md","lines":28}]
+        "otherFiles": [{"name":"architecture-decisions.md","lines":81},{"name":"art-journal.md","lines":176},{"name":"pending.md","lines":52},{"name":"philosophy-reading.md","lines":21},{"name":"token-usage.md","lines":28}]
       },
       "sessions": 12,
       "heartbeatInterval": "disabled",
