@@ -217,6 +217,14 @@ import sys, json
 data = json.load(sys.stdin)
 jobs = data.get('jobs', data if isinstance(data, list) else [])
 out = []
+def detect_outputs(msg, delivery):
+    tags = []
+    if any(k in msg for k in ['memory/', 'MEMORY', 'learnings.md', '保存到', '追加到', '写入']): tags.append('file')
+    if 'nano-banana' in msg: tags.append('art')
+    ch = delivery.get('channel','')
+    if ch: tags.append(ch)
+    if not tags: tags.append('discord')
+    return tags
 for j in jobs:
     sched = j.get('schedule', {})
     state = j.get('state', {})
@@ -237,6 +245,7 @@ for j in jobs:
         'task': msg,
         'deliveryChannel': delivery.get('channel',''),
         'deliveryTo': delivery.get('to',''),
+        'outputs': detect_outputs(msg, delivery),
     })
 print(json.dumps(out, ensure_ascii=False, indent=2))
 " >> "$OUTPUT" 2>/dev/null

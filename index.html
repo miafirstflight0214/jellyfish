@@ -234,6 +234,15 @@
     font-family: 'JetBrains Mono', monospace; font-size: 9px;
     color: var(--text-muted); opacity: 0.5;
   }
+  .cron-labels { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .cron-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    padding: 2px 8px; border-radius: 3px; letter-spacing: 0.03em;
+    border: 1px solid var(--border);
+  }
+  .cron-label.discord { color: var(--blue); border-color: rgba(126,179,224,0.25); }
+  .cron-label.file { color: var(--green); border-color: rgba(142,205,160,0.25); }
+  .cron-label.art { color: var(--purple); border-color: rgba(184,160,216,0.25); }
 
   /* Footer */
   .colophon {
@@ -457,17 +466,7 @@ function render(data) {
   });
   html += '</div>';
 
-  // Row 3: Long-term Memory
-  html += `<div class="section-row"><div class="row-header">${t.longTermMemory}</div></div>`;
-  html += '<div class="section-row">';
-  data.agents.forEach(agent => {
-    const sectionsList = agent.memory.sections.map(s => `<span class="section-item">${s}</span>`).join('');
-    html += `<div class="section-cell">
-      <div class="memory-total">${agent.memory.longTermLines} ${t.lines}</div>
-      ${sectionsList ? `<div class="sections-list">${sectionsList}</div>` : ''}
-    </div>`;
-  });
-  html += '</div>';
+  // Row 3: Long-term Memory (removed)
 
   // Row 4: Daily Activity
   html += `<div class="section-row"><div class="row-header">${t.dailyActivity}</div></div>`;
@@ -542,12 +541,21 @@ function render(data) {
         let summary = task.replace(/^你是.*?。/,'').replace(/^先.*?。/,'').trim();
         if (summary.length > 80) summary = summary.substring(0, 80) + '…';
 
+        const labelNames = { discord: '→ Discord', file: '→ System Files', art: '→ Art Generation' };
+        const labelNamesZh = { discord: '→ Discord', file: '→ 系统文件', art: '→ 生成画作' };
+        const outputs = c.outputs || ['discord'];
+        const labels = outputs.map(o => {
+          const name = (currentLang === 'zh' ? labelNamesZh[o] : labelNames[o]) || o;
+          return `<span class="cron-label ${o}">${name}</span>`;
+        }).join('');
+
         html += `<div class="cron-card">
           <div class="cron-card-top">
             <span class="cron-status ${statusCls}"></span>
             <span class="cron-name">${c.name}</span>
             <span class="cron-time">${timeStr}</span>
           </div>
+          <div class="cron-labels">${labels}</div>
           ${summary ? `<div class="cron-task">${summary}</div>` : ''}
           <div class="cron-meta">${currentLang === 'zh' ? '上次' : 'Last'}: ${lastRun}</div>
         </div>`;
