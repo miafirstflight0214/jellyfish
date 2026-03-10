@@ -222,13 +222,17 @@
   .cron-name {
     font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
   }
+  .cron-labels { display: flex; gap: 5px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
   .cron-time {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    color: var(--accent); margin-left: auto; white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--text-muted); opacity: 0.6;
   }
   .cron-task {
     font-size: 12px; font-weight: 300; color: var(--text-muted);
     line-height: 1.6; margin-bottom: 8px;
+  }
+  .cron-bottom {
+    display: flex; justify-content: space-between; align-items: baseline;
   }
   .cron-meta {
     font-family: 'JetBrains Mono', monospace; font-size: 9px;
@@ -551,11 +555,13 @@ function render(data) {
           <div class="cron-card-top">
             <span class="cron-status ${statusCls}"></span>
             <span class="cron-name">${c.name}</span>
+            <div class="cron-labels">${labels}</div>
+          </div>
+          ${summary ? `<div class="cron-task">${summary}</div>` : ''}
+          <div class="cron-bottom">
+            <span class="cron-meta">${currentLang === 'zh' ? '上次' : 'Last'}: ${lastRun}</span>
             <span class="cron-time">${timeStr}</span>
           </div>
-          <div class="cron-labels">${labels}</div>
-          ${summary ? `<div class="cron-task">${summary}</div>` : ''}
-          <div class="cron-meta">${currentLang === 'zh' ? '上次' : 'Last'}: ${lastRun}</div>
         </div>`;
       });
       html += `</div></div>`;
