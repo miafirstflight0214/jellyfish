@@ -1,5 +1,5 @@
 {
-  "exported": "2026-03-10T07:23:26Z",
+  "exported": "2026-03-10T07:26:06Z",
   "agents": [
     {
       "id": "main",
@@ -58,7 +58,7 @@
         "lastUpdated": "2026-03-10T11:41:41",
         "sections": ["About May","我的职责","协作","学习进度","Cron Jobs","Key Lessons"],
         "dailyLogs": [{"date":"2026-03-05","lines":5},{"date":"2026-03-06","lines":84},{"date":"2026-03-07","lines":40},{"date":"2026-03-08","lines":44},{"date":"2026-03-09","lines":91}],
-        "otherFiles": [{"name":"humanities-reading.md","lines":13},{"name":"nature-study.md","lines":32},{"name":"pending.md","lines":13}]
+        "otherFiles": [{"name":"humanities-reading.md","lines":13},{"name":"nature-study.md","lines":52},{"name":"pending.md","lines":13}]
       },
       "sessions": 11,
       "heartbeatInterval": "1h",
@@ -312,8 +312,6 @@
     {"name":"artists/creative-log.md","lines":42}
     ,
     {"name":"references/lessons.md","lines":172}
-    ,
-    {"name":"references/nemo-nature-study.md","lines":36}
     ,
     {"name":"viewing-notes/viewing-list.md","lines":87}
     ,
