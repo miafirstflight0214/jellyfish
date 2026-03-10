@@ -490,7 +490,7 @@ function render(data) {
   html += '<div class="section-row">';
   const sharedItems = (data.shared || []).map(f => {
     const name = f.name.split('/').pop();
-    return `<div class="knowledge-item"><span>${name} <span style="font-size:9px;color:var(--accent);opacity:0.7;margin-left:4px">shared</span></span><span>${f.lines}L</span></div>`;
+    return `<div class="knowledge-item"><span>${name} <span style="font-size:9px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:1px 4px;margin-left:4px;opacity:0.8">shared</span></span><span>${f.lines}L</span></div>`;
   }).join('');
   data.agents.forEach((agent, i) => {
     const agentList = agent.memory.otherFiles.map(f =>
