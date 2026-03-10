@@ -490,7 +490,6 @@ function render(data) {
   // Shared files - full width
   const sharedFiles = (data.shared || []).filter(f => f.name !== 'README.md');
   if (sharedFiles.length > 0) {
-    html += `<div class="section-row"><div class="row-header" style="font-size:11px;color:var(--text-muted);font-weight:400">${currentLang === 'zh' ? '共享' : 'Shared'}</div></div>`;
     html += '<div class="section-row">';
     html += '<div class="section-cell" style="grid-column:1/-1"><div class="knowledge-list" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0 24px">';
     sharedFiles.forEach(f => {
